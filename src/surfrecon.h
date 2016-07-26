@@ -108,8 +108,8 @@ public:
 public:
     void setPoints(VoxelSet pointcloud);
     void getPlanes();
-    void getSurfaceInVoxels(VoxelSet voxels, float thresh);
-    void surfrecon(VoxelSet pcIn, VoxelSet pcOut);
+    void getSurfaceInVoxels(VoxelSet &voxels, float thresh);
+    void surfrecon(VoxelSet pcIn, VoxelSet &pcOut);
     
 public:
     PointSet points;

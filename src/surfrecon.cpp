@@ -76,7 +76,7 @@ void Surf::getPlanes()
     }
 }
 
-void Surf::getSurfaceInVoxels(VoxelSet voxels, float thresh)
+void Surf::getSurfaceInVoxels(VoxelSet &voxels, float thresh)
 {
     //
     long bx, by, bz, ex, ey, ez; // bounding box
@@ -119,7 +119,7 @@ void Surf::getSurfaceInVoxels(VoxelSet voxels, float thresh)
     }
 }
 
-void Surf::surfrecon(VoxelSet pcIn, VoxelSet pcOut)
+void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut)
 {
     // init
     float thresh = 0.01;
@@ -325,31 +325,41 @@ int main(int argc, char *argv[])
     
     
     //
-    VDBIO vdb;
+//    VDBIO vdb;
+//    
+//    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
+//    openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
+//    
+//    grid->setTransform (openvdb::math::Transform::createLinearTransform (0.5));
+//    grid->setGridClass (openvdb::GRID_FOG_VOLUME);
+//    grid->setName ("surface");
+//    
+//    openvdb::Coord ijk;
+//    
+//    //
+//    for(long i=0; i<pcOut.size(); i++)
+//    {
+//        for(int j=0; j<3; j++)
+//        {
+//            ijk[j] = pcOut[i][j];
+//        }
+//        accessor.setValue(ijk, 1.0);
+//    }
+//    
+//    vdb.grids.push_back(grid);
+//    
+//    vdb.write(const_cast<char*>(FLAGS_o.c_str()));
     
-    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
-    openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
     
-    grid->setTransform (openvdb::math::Transform::createLinearTransform (0.5));
-    grid->setGridClass (openvdb::GRID_FOG_VOLUME);
-    grid->setName ("surface");
-    
-    openvdb::Coord ijk;
-    
-    //
-    for(long i=0; i<pcOut.size(); i++)
-    {
-        for(int j=0; j<3; j++)
+        t.reset();
+        std::ofstream out(FLAGS_o);
+        for(long i=0; i<pcOut.size(); i++)
         {
-            ijk[j] = pcOut[i][j];
+            out << pcOut[i][0] <<" "<< pcOut[i][1] <<" "<<pcOut[i][2]<< '\n';
         }
-        accessor.setValue(ijk, 1.0);
-    }
+        std::cerr << "Writing "<<pcOut.size()<<" voxels in " << t.time() << " sec." << std::endl;
     
-    vdb.grids.push_back(grid);
-    
-    vdb.write(const_cast<char*>(FLAGS_o.c_str()));
-    
+        out.close();
     
     
     
