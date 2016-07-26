@@ -9,12 +9,9 @@
 #include "surfrecon.h"
 
 // command line interface
-
 DEFINE_string(pc, "", "point cloud input .off");
 DEFINE_string(o, "", "output");
-DEFINE_int64(minx, 0, "bouding box minx");
-DEFINE_int64(miny, 0, "bouding box miny");
-DEFINE_int64(minz, 0, "bouding box minz");
+DEFINE_double(t, 1.0, "threshold");
 
 //
 Vert::Vert()
@@ -43,6 +40,16 @@ Surf::~Surf()
 {
 }
 
+void Surf::setPoints(VoxelSet pointcloud)
+{
+    points.clear();
+    
+    for(int i=0; i<pointcloud.size(); i++)
+    {
+        points.push_back(Point(pointcloud[i].x, pointcloud[i].y, pointcloud[i].z));
+    }
+}
+
 void Surf::getPlanes()
 {
     Point P,Q,R;
@@ -67,6 +74,108 @@ void Surf::getPlanes()
         
         planes.push_back(plane);
     }
+}
+
+void Surf::getSurfaceInVoxels(VoxelSet voxels, float thresh)
+{
+    //
+    long bx, by, bz, ex, ey, ez; // bounding box
+    Point P,Q,R;
+    Plane plane;
+    
+    //
+    voxels.clear();
+    
+    //
+    for(int i=0; i<planes.size(); i++)
+    {
+        P = points[faces[i].p];
+        Q = points[faces[i].q];
+        R = points[faces[i].r];
+        
+        bx = fmin( fmin( P.x(), Q.x() ), R.x() ) + 0.5;
+        ex = fmax( fmax( P.x(), Q.x() ), R.x() ) + 0.5;
+        
+        by = fmin( fmin( P.y(), Q.y() ), R.y() ) + 0.5;
+        ey = fmax( fmax( P.y(), Q.y() ), R.y() ) + 0.5;
+        
+        bz = fmin( fmin( P.z(), Q.z() ), R.z() ) + 0.5;
+        ez = fmax( fmax( P.z(), Q.z() ), R.z() ) + 0.5;
+        
+        plane = planes[i];
+        
+        for(long z=bz; z<=ez; z++)
+        {
+            for(long y=by; y<=ey; y++)
+            {
+                for(long x=bx; x<=ex; x++)
+                {
+                    if(plane.a*x + plane.b*y + plane.c*z + plane.d < thresh)
+                        voxels.push_back(VoxelType(x,y,z));
+                }
+            }
+        }
+        
+    }
+}
+
+void Surf::surfrecon(VoxelSet pcIn, VoxelSet pcOut)
+{
+    // init
+    float thresh = 0.01;
+    
+    setPoints(pcIn);
+    
+    // reconstruct
+    Timer t;
+    t.start();
+    
+    Reconstruction reconstruct( 10, 200 );
+    
+    reconstruct.reconstruct_surface( points.begin(), points.end(), 4,
+                                    false, // Do not separate shells
+                                    true // Force manifold output
+                                    );
+    
+    std::cerr << "Reconstruction done in " << t.time() << " sec." << std::endl;
+
+    //
+    faces.clear();
+    for( Triple_iterator it = reconstruct.surface_begin( ); it != reconstruct.surface_end(  ); ++it )
+    {
+        int c=0;
+        Vert v;
+        for (auto i:*it)
+        {
+            switch (c++)
+            {
+                case 0:
+                    v.p = i;
+                    break;
+                    
+                case 1:
+                    v.q = i;
+                    break;
+                    
+                case 2:
+                    v.r = i;
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+        faces.push_back(v);
+    }
+    
+    t.reset();
+    getPlanes();
+    cout<<" planes: "<<planes.size()<<" in "<< t.time() << " sec." <<endl;
+    
+    
+    t.reset();
+    getSurfaceInVoxels(pcOut, thresh);
+    cout<<"voxels: "<<pcOut.size()<< " in "<<t.time()<<" sec."<<endl;
 }
 
 // OpenVDB I/O class
@@ -101,7 +210,6 @@ void VDBIO::write(char const *filename)
     file.close ();
 }
 
-
 // main func
 int main(int argc, char *argv[])
 {
@@ -113,15 +221,13 @@ int main(int argc, char *argv[])
     
     std::cout<<"Parameters:"<<std::endl;
     std::cout<<"input: \n  <PointCloud>: "<<FLAGS_pc<<" \noutput: \n  <Output>: "<<FLAGS_o<<std::endl;
-    
-    
-    //
-    double bx = FLAGS_minx;
-    double by = FLAGS_miny;
-    double bz = FLAGS_minz;
+
     
     //
     Surf surface;
+    
+    // Threshold
+    float thresh = float(FLAGS_t);
     
     //
     std::ifstream in(FLAGS_pc);
@@ -152,18 +258,51 @@ int main(int argc, char *argv[])
     
     std::cerr << "Reconstruction done in " << t.time() << " sec." << std::endl;
     
+    //
+    surface.faces.clear();
+    for( Triple_iterator it = reconstruct.surface_begin( ); it != reconstruct.surface_end(  ); ++it )
+    {
+        //cout << "3 "<< *it << '\n';
+        
+        int c=0;
+        Vert v;
+        for (auto i:*it)
+        {
+            //std::cout << ' ' << points[i].x();
+
+            switch (c++)
+            {
+                case 0:
+                    v.p = i;
+                    break;
+                    
+                case 1:
+                    v.q = i;
+                    break;
+                    
+                case 2:
+                    v.r = i;
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+        //cout<<endl;
+        
+        surface.faces.push_back(v);
+    }
     
-//    for( Triple_iterator it = reconstruct.surface_begin( ); it != reconstruct.surface_end(  ); ++it )
-//    {
-//        //cout << "3 "<< *it << '\n';
-//        
-//        for (auto i:*it)
-//            std::cout << ' ' << points[i].x();
-//        cout<<endl;
-//        
-//        
-//    }
+    t.reset();
+    surface.getPlanes();
     
+    cout<<"faces: "<<surface.faces.size()<<" planes: "<<surface.planes.size()<<" in "<< t.time() << " sec." <<endl;
+    
+    
+    t.reset();
+    VoxelSet pcOut;
+    surface.getSurfaceInVoxels(pcOut, thresh);
+    cout<<"voxels: "<<pcOut.size()<< " in "<<t.time()<<" sec."<<endl;
     
     
 //    t.reset();
@@ -197,11 +336,15 @@ int main(int argc, char *argv[])
     
     openvdb::Coord ijk;
     
-    ijk[0] = 100; // x
-    ijk[1] = 100; // y
-    ijk[2] = 100; // z
-    
-    accessor.setValue(ijk, 1.0);
+    //
+    for(long i=0; i<pcOut.size(); i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            ijk[j] = pcOut[i][j];
+        }
+        accessor.setValue(ijk, 1.0);
+    }
     
     vdb.grids.push_back(grid);
     

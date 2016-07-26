@@ -28,6 +28,8 @@
 #include <openvdb/tools/GridTransformer.h>
 #include <openvdb/io/Stream.h>
 
+#include <glm/vec3.hpp>
+
 #include <deque>
 #include <queue>
 #include <cstdlib>
@@ -65,6 +67,8 @@ typedef std::vector< Point >                                    PointSet;
 typedef Reconstruction::Triple_const_iterator                   Triple_iterator;
 typedef CGAL::Timer Timer;
 
+typedef glm::vec3                                               VoxelType;
+typedef std::vector< VoxelType >                                VoxelSet;
 
 // classes
 
@@ -102,7 +106,10 @@ public:
     ~Surf();
     
 public:
+    void setPoints(VoxelSet pointcloud);
     void getPlanes();
+    void getSurfaceInVoxels(VoxelSet voxels, float thresh);
+    void surfrecon(VoxelSet pcIn, VoxelSet pcOut);
     
 public:
     PointSet points;
