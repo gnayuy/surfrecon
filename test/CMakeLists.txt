@@ -25,5 +25,5 @@ ENDIF(GFLAGS_FOUND)
 
 #Rule to build executable program
 ADD_EXECUTABLE(surfvol ${surfvol_sources})
-TARGET_LINK_LIBRARIES(surfvol ${SurfRecon_LIBRARY} )
+TARGET_LINK_LIBRARIES(surfvol ${SurfRecon_LIBRARY} ${GFLAGS_LIBRARIES})
 
