@@ -106,16 +106,14 @@ public:
     
 public:
     void setPoints(VoxelSet pointcloud);
-    void getPlanes();
-    void getSurfaceInVoxels(VoxelSet &voxels, float thresh);
-    void surfrecon(VoxelSet pcIn, VoxelSet &pcOut);
+    void surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co = 26, int num_threads = 8);
     
 public:
     // Voxelization with Zlatanova's 3D raster engine (http://www.sciencedirect.com/science/article/pii/S2215016116000029)
     // Zlatanova, Sisi, et al. "Towards 3D raster GIS: On developing a raster engine for spatial DBMS."
     // ISPRS WG IV/2 Workshop "Global Geospatial Information and High Resolution Global Land Cover/Land Use Mapping"
     // Novosibirsk, Russian Federation, 21 April 2016.
-    int voxelizeMesh(VoxelSet &voxels, Vertex *vertices, unsigned int nVertices, Face **mesh, unsigned int nTriangles, Vertex *vSize, int co, int num_threads);
+    int voxelizeMesh(VoxelSet &voxels, Vertex *vertices, unsigned int nVertices, Face **mesh, unsigned int nTriangles, Vertex *vSize, int co = 26, int num_threads = 8);
     
     void assign(Vertex *to, Vertex *from);
     void addTo(Vertex *result, Vertex *v, double x, double y, double z);

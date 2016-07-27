@@ -41,80 +41,6 @@ void Surf::setPoints(VoxelSet pointcloud)
     }
 }
 
-void Surf::getPlanes()
-{
-    Point P,Q,R;
-    Plane plane;
-    
-    //
-    planes.clear();
-    
-    //
-    for(int i=0; i<faces.size(); i++)
-    {
-        P = points[faces[i].p];
-        Q = points[faces[i].q];
-        R = points[faces[i].r];
-        
-        plane.a = (Q.y()-P.y())*(R.z()-P.z()) - (Q.z()-P.z())*(R.y()-P.y());
-        plane.b = (Q.z()-P.z())*(R.x()-P.x()) - (Q.x()-P.x())*(R.z()-P.z());
-        plane.c = (Q.x()-P.x())*(R.y()-P.y()) - (Q.y()-P.y())*(R.x()-P.x());
-        
-        double denominator = sqrt(plane.a*plane.a + plane.b*plane.b + plane.c*plane.c) + 1e-6;
-        
-        plane.a /= denominator;
-        plane.b /= denominator;
-        plane.c /= denominator;
-        
-        plane.d = -( plane.a*P.x() + plane.b*P.y() + plane.c*P.z() );
-        
-        planes.push_back(plane);
-    }
-}
-
-void Surf::getSurfaceInVoxels(VoxelSet &voxels, float thresh)
-{
-    //
-    long bx, by, bz, ex, ey, ez; // bounding box
-    Point P,Q,R;
-    Plane plane;
-    
-    //
-    voxels.clear();
-    
-    //
-    for(int i=0; i<planes.size(); i++)
-    {
-        P = points[faces[i].p];
-        Q = points[faces[i].q];
-        R = points[faces[i].r];
-        
-        bx = fmin( fmin( P.x(), Q.x() ), R.x() ) + 0.5;
-        ex = fmax( fmax( P.x(), Q.x() ), R.x() ) + 0.5;
-        
-        by = fmin( fmin( P.y(), Q.y() ), R.y() ) + 0.5;
-        ey = fmax( fmax( P.y(), Q.y() ), R.y() ) + 0.5;
-        
-        bz = fmin( fmin( P.z(), Q.z() ), R.z() ) + 0.5;
-        ez = fmax( fmax( P.z(), Q.z() ), R.z() ) + 0.5;
-        
-        plane = planes[i];
-        
-        for(long z=bz; z<=ez; z++)
-        {
-            for(long y=by; y<=ey; y++)
-            {
-                for(long x=bx; x<=ex; x++)
-                {
-                    if(fabs( plane.a*x + plane.b*y + plane.c*z + plane.d ) <= thresh)
-                        voxels.push_back(VoxelType(x,y,z));
-                }
-            }
-        }
-        
-    }
-}
-
 /*
  * as for A=B assigning the value of a point to another
  */
@@ -557,11 +483,9 @@ int Surf::voxelizeMesh(VoxelSet &voxels, Vertex *vertices, unsigned int nVertice
 }
 
 // surfrecon func
-void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut)
+void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
 {
     // init
-    float thresh = 1.0;
-    
     setPoints(pcIn);
     
     // reconstruct
@@ -606,13 +530,61 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut)
         faces.push_back(v);
     }
     
-    t.reset();
-    getPlanes();
-    cout<<" planes: "<<planes.size()<<" in "<< t.time() << " sec." <<endl;
+    //
+    int nVertices = points.size(), nTriangles = faces.size(), v=0, f=0;
+    Vertex *vertices = NULL;
+    Face *mesh = NULL;
     
+    try {
+        vertices = new Vertex [nVertices];
+        mesh = new Face [nTriangles];
+    } catch (...) {
+        cout<<"Fail to allocate memory for Vertices and Faces."<<endl;
+        return;
+    }
     
+    Face **mesh_ptr = NULL;
+    try {
+        mesh_ptr = new Face* [nTriangles];
+    } catch (...) {
+        cout<<"Fail to allocate memory for Vertices and Faces."<<endl;
+        return;
+    }
+    
+    for(long i=0; i<nVertices; i++)
+    {
+        vertices[i].x = points[i].x();
+        vertices[i].y = points[i].y();
+        vertices[i].z = points[i].z();
+    }
+    
+    for(long i=0; i<nTriangles; i++)
+    {
+        mesh[i].p1 = &vertices[faces[i].p];
+        mesh[i].p2 = &vertices[faces[i].q];
+        mesh[i].p3 = &vertices[faces[i].r];
+        
+        mesh_ptr[i] = &mesh[i];
+    }
+    
+    Vertex vSize;
+    vSize.x = 1.0;
+    vSize.y = 1.0;
+    vSize.z = 1.0;
+    
+    //
     t.reset();
-    getSurfaceInVoxels(pcOut, thresh);
-    cout<<"voxels: "<<pcOut.size()<< " in "<<t.time()<<" sec."<<endl;
+    if (voxelizeMesh(pcOut, vertices, nVertices, mesh_ptr, nTriangles, &vSize, co, num_threads))
+    {
+        if(mesh_ptr) {delete []mesh_ptr; mesh_ptr=NULL;}
+        if(mesh) {delete []mesh; mesh=NULL;}
+        if(vertices) {delete []vertices; vertices=NULL;}
+        cout << "Fail to execute voxelization."<<endl;
+        return;
+    }
+    cout<<" Convert mesh to "<<pcOut.size()<<" voxels in "<< t.time() << " sec." <<endl;
+
+    //
+    return;
 }
 

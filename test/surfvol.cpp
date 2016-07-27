@@ -89,14 +89,14 @@ int main(int argc, char *argv[])
     }
     
     t.reset();
-    surface.getPlanes();
+    //surface.getPlanes();
     
     cout<<"faces: "<<surface.faces.size()<<" planes: "<<surface.planes.size()<<" in "<< t.time() << " sec." <<endl;
     
     
     t.reset();
     VoxelSet pcOut;
-    surface.getSurfaceInVoxels(pcOut, thresh);
+    //surface.getSurfaceInVoxels(pcOut, thresh);
     cout<<"voxels: "<<pcOut.size()<< " in "<<t.time()<<" sec."<<endl;
     
     // Output
