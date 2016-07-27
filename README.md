@@ -2,7 +2,7 @@
 
 To reconstruct a surface from a point cloud
 
-The voxelization we use [Zlatanova's 3D raster engine][] [1].
+The voxelization method we use Zlatanova's 3D raster engine [1][].
 
 ## compile using cmake
 
@@ -21,7 +21,7 @@ Install [gflags][] for using the command lines.
 [CGAL]: http://www.cgal.org
 [gflags]: https://github.com/gflags/gflags
 [OFF]: http://www.geomview.org/docs/html/OFF.html#OFF
-[Zlatanova's 3D raster method]: http://www.sciencedirect.com/science/article/pii/S2215016116000029
+[1]: http://www.sciencedirect.com/science/article/pii/S2215016116000029
 
 ## references
 
