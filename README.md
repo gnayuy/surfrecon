@@ -17,10 +17,12 @@ Install [gflags][] for using the command lines.
 ## file formats
 
 [OFF][]: object file format
+[SWC][]: neuron file format
 
 [CGAL]: http://www.cgal.org
 [gflags]: https://github.com/gflags/gflags
 [OFF]: http://www.geomview.org/docs/html/OFF.html#OFF
+[SWC]: http://www.neuronland.org/NLMorphologyConverter/MorphologyFormats/SWC/Spec.html
 [1]: http://www.sciencedirect.com/science/article/pii/S2215016116000029
 
 ## references
