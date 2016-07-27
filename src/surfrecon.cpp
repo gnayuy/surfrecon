@@ -7,7 +7,7 @@
 // command line interface
 DEFINE_string(pc, "", "point cloud input .off");
 DEFINE_string(o, "", "output");
-DEFINE_double(t, 25.0, "threshold");
+DEFINE_double(t, 1.0, "threshold");
 
 //
 Vert::Vert()
@@ -61,10 +61,15 @@ void Surf::getPlanes()
         Q = points[faces[i].q];
         R = points[faces[i].r];
         
-        // cross product
         plane.a = (Q.y()-P.y())*(R.z()-P.z()) - (Q.z()-P.z())*(R.y()-P.y());
         plane.b = (Q.z()-P.z())*(R.x()-P.x()) - (Q.x()-P.x())*(R.z()-P.z());
         plane.c = (Q.x()-P.x())*(R.y()-P.y()) - (Q.y()-P.y())*(R.x()-P.x());
+        
+        double denominator = sqrt(plane.a*plane.a + plane.b*plane.b + plane.c*plane.c) + 1e-6;
+        
+        plane.a /= denominator;
+        plane.b /= denominator;
+        plane.c /= denominator;
         
         plane.d = -( plane.a*P.x() + plane.b*P.y() + plane.c*P.z() );
         
@@ -118,7 +123,7 @@ void Surf::getSurfaceInVoxels(VoxelSet &voxels, float thresh)
 void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut)
 {
     // init
-    float thresh = 25;
+    float thresh = 1.0;
     
     setPoints(pcIn);
     
