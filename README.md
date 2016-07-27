@@ -1,6 +1,6 @@
 # surfrecon
 
-To reconstruct a surface from a point cloud
+To reconstruct a surface (green shown in the following figure) from a point cloud (red).
 
 The voxelization method we use Zlatanova's 3D raster engine [1][].
 
