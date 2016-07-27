@@ -12,7 +12,7 @@ Install [gflags][] for using the command lines.
 
 ## usage
 
-./surfrecon -pc <$PointCloud> -o <$Out>
+./surfvol -pc <$PointCloud> -o <$Voxels>
 
 ## file formats
 
