@@ -17,6 +17,7 @@ Install [gflags][] for using the command lines.
 ## file formats
 
 [OFF][]: object file format
+
 [SWC][]: neuron file format
 
 [CGAL]: http://www.cgal.org
