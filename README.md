@@ -4,6 +4,8 @@ To reconstruct a surface from a point cloud
 
 The voxelization method we use Zlatanova's 3D raster engine [1][].
 
+![Picture](data/surfrecon.png)
+
 ## compile using cmake
 
 Install [CGAL][] by following the instructions on their [web site][CGAL].
