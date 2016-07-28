@@ -10,7 +10,7 @@ Install [CGAL][] by following the instructions on their [web site][CGAL]. This i
 
 Install [gflags][] for using the command lines. This is an option for compiling the example code.
 
-## API
+## api
 
 To use surfrecon library, you need include surfrecon.h and call the function Surf.surfrecon(PointCloud pcIn, Voxels voxelOut).
 
