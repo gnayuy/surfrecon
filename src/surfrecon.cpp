@@ -5,24 +5,6 @@
 #include "surfrecon.h"
 
 //
-Vert::Vert()
-{
-}
-
-Vert::~Vert()
-{
-}
-
-//
-Plane::Plane()
-{
-}
-
-Plane::~Plane()
-{
-}
-
-//
 Surf::Surf()
 {
 }
@@ -483,7 +465,7 @@ int Surf::voxelizeMesh(VoxelSet &voxels, Vertex *vertices, unsigned int nVertice
 }
 
 // surfrecon func
-void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
+void Surf::surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co, int num_threads)
 {
     // init
     setPoints(pcIn);
@@ -506,21 +488,21 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
     for( Triple_iterator it = reconstruct.surface_begin( ); it != reconstruct.surface_end(  ); ++it )
     {
         int c=0;
-        Vert v;
+        Voxel v;
         for (auto i:*it)
         {
             switch (c++)
             {
                 case 0:
-                    v.p = i;
+                    v.x = i;
                     break;
                     
                 case 1:
-                    v.q = i;
+                    v.y = i;
                     break;
                     
                 case 2:
-                    v.r = i;
+                    v.z = i;
                     break;
                     
                 default:
@@ -560,9 +542,9 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
     
     for(long i=0; i<nTriangles; i++)
     {
-        mesh[i].p1 = &vertices[faces[i].p];
-        mesh[i].p2 = &vertices[faces[i].q];
-        mesh[i].p3 = &vertices[faces[i].r];
+        mesh[i].p1 = &vertices[faces[i].x];
+        mesh[i].p2 = &vertices[faces[i].y];
+        mesh[i].p3 = &vertices[faces[i].z];
         
         mesh_ptr[i] = &mesh[i];
     }
@@ -574,7 +556,7 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
     
     //
     t.reset();
-    if (voxelizeMesh(pcOut, vertices, nVertices, mesh_ptr, nTriangles, &vSize, co, num_threads))
+    if (voxelizeMesh(voxelOut, vertices, nVertices, mesh_ptr, nTriangles, &vSize, co, num_threads))
     {
         if(mesh_ptr) {delete []mesh_ptr; mesh_ptr=NULL;}
         if(mesh) {delete []mesh; mesh=NULL;}
@@ -582,7 +564,7 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co, int num_threads)
         cout << "Fail to execute voxelization."<<endl;
         return;
     }
-    cout<<" Convert mesh to "<<pcOut.size()<<" voxels in "<< t.time() << " sec." <<endl;
+    cout<<" Convert mesh to "<<voxelOut.size()<<" voxels in "<< t.time() << " sec." <<endl;
 
     //
     return;

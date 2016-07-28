@@ -8,7 +8,14 @@
 // command line interface
 DEFINE_string(pc, "", "PointCloud <.off>");
 DEFINE_string(o, "", "Voxels <.swc>");
-DEFINE_double(t, 1.0, "threshold");
+
+// SWC node
+class Node
+{
+public:
+    float x,y,z;
+    int n, parent, type, radius;
+};
 
 // main func
 int main(int argc, char *argv[])
@@ -22,91 +29,68 @@ int main(int argc, char *argv[])
     std::cout<<"Parameters:"<<std::endl;
     std::cout<<"  <PointCloud>: "<<FLAGS_pc<<" \n  <Voxels>: "<<FLAGS_o<<std::endl;
     
-    
     //
     Surf surface;
-    
-    // Threshold
-    float thresh = float(FLAGS_t);
-    
-    //
-    std::ifstream in(FLAGS_pc);
-    std::cerr << "Reading " << std::flush;
-    if( !in || !CGAL::read_off_points( in, std::back_inserter( surface.points ) ) ) {
-        std::cerr << "Error: cannot read file" << std::endl;
-        return -1;
-    }
-    
-    std::cerr << "done: " << surface.points.size() << " points." << std::endl;
+    VoxelSet pcIn, voxelOut;
+    string line;
     
     //
     Timer t;
     t.start();
     
-    // Construct the mesh in a scale space.
-    Reconstruction reconstruct( 10, 200 );
+    // load input point cloud (.swc)
+    std::ifstream in(FLAGS_pc);
     
-    reconstruct.reconstruct_surface( surface.points.begin(), surface.points.end(), 4,
-                                    false, // Do not separate shells
-                                    true // Force manifold output
-                                    );
-    
-    std::cerr << "Reconstruction done in " << t.time() << " sec." << std::endl;
-    
-    //
-    surface.faces.clear();
-    for( Triple_iterator it = reconstruct.surface_begin( ); it != reconstruct.surface_end(  ); ++it )
+    pcIn.clear();
+    if (in.is_open())
     {
-        //cout << "3 "<< *it << '\n';
-        
-        int c=0;
-        Vert v;
-        for (auto i:*it)
+        while ( getline (in,line) )
         {
-            //std::cout << ' ' << points[i].x();
-            
-            switch (c++)
+            if(strstr(line.c_str(),"#"))
             {
-                case 0:
-                    v.p = i;
-                    break;
-                    
-                case 1:
-                    v.q = i;
-                    break;
-                    
-                case 2:
-                    v.r = i;
-                    break;
-                    
-                default:
-                    break;
+                cout << " skip comments" << endl;
+            }
+            else
+            {
+                istringstream iss(line);
+                
+                if(iss.fail() || iss.eof())
+                    continue;
+                
+                Node node;
+                
+                iss >> node.n;
+                iss >> node.type;
+                
+                iss >> node.x;
+                iss >> node.y;
+                iss >> node.z;
+                
+                iss >> node.radius;
+                iss >> node.parent;
+                
+                pcIn.push_back(VoxelType(node.x, node.y, node.z));
             }
         }
-        //cout<<endl;
-        
-        surface.faces.push_back(v);
+        in.close();
     }
-    
-    t.reset();
-    //surface.getPlanes();
-    
-    cout<<"faces: "<<surface.faces.size()<<" planes: "<<surface.planes.size()<<" in "<< t.time() << " sec." <<endl;
-    
-    
-    t.reset();
-    VoxelSet pcOut;
-    //surface.getSurfaceInVoxels(pcOut, thresh);
-    cout<<"voxels: "<<pcOut.size()<< " in "<<t.time()<<" sec."<<endl;
-    
+    else
+    {
+        cout << "Unable to open file"<<FLAGS_pc<<endl;
+    }
+    cout<<" load " << FLAGS_pc << " in " <<t.time()<<" sec. "<<endl;
+
+    //
+    surface.surfrecon(pcIn, voxelOut);
+
     // Output
     t.reset();
     std::ofstream out(FLAGS_o);
-    for(long i=0; i<pcOut.size(); i++)
+    for(long i=0; i<voxelOut.size(); i++)
     {
-        out << pcOut[i][0] <<" "<< pcOut[i][1] <<" "<<pcOut[i][2]<< '\n';
+        out << i << " 0 "<< voxelOut[i].x <<" "<< voxelOut[i].y <<" "<<voxelOut[i].z<< " 0.5 -1\n";
     }
-    std::cerr << "Writing "<<pcOut.size()<<" voxels in " << t.time() << " sec." << std::endl;
+    std::cerr << " save " << FLAGS_o << t.time() << " sec." << std::endl;
     
     out.close();
     

@@ -37,7 +37,7 @@
 //
 using namespace std;
 
-// types
+//
 typedef CGAL::Exact_predicates_inexact_constructions_kernel     Kernel;
 
 typedef CGAL::Scale_space_surface_reconstruction_3< Kernel >    Reconstruction;
@@ -48,10 +48,9 @@ typedef std::vector< Point >                                    PointSet;
 typedef Reconstruction::Triple_const_iterator                   Triple_iterator;
 typedef CGAL::Timer Timer;
 
+//
 typedef glm::vec3                                               VoxelType;
 typedef std::vector< VoxelType >                                VoxelSet;
-
-// classes
 
 //
 typedef struct {
@@ -70,32 +69,7 @@ typedef struct {
     Vertex start, end;
 } LineSegment;
 
-
-// Vert
-class Vert
-{
-public:
-    Vert();
-    ~Vert();
-    
-public:
-    int p, q, r;
-};
-
-typedef std::vector<Vert>    FaceSet;
-
-// Plane
-class Plane
-{
-public:
-    Plane();
-    ~Plane();
-    
-public:
-    double a,b,c,d;
-};
-
-typedef std::vector<Plane>    PlaneSet;
+typedef std::vector<Voxel>     FaceSet;
 
 // Surf
 class Surf
@@ -106,7 +80,7 @@ public:
     
 public:
     void setPoints(VoxelSet pointcloud);
-    void surfrecon(VoxelSet pcIn, VoxelSet &pcOut, int co = 26, int num_threads = 8);
+    void surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co = 26, int num_threads = 8);
     
 public:
     // Voxelization with Zlatanova's 3D raster engine (http://www.sciencedirect.com/science/article/pii/S2215016116000029)
@@ -138,7 +112,6 @@ public:
 public:
     PointSet points;
     FaceSet faces;
-    PlaneSet planes;
 };
 
 
