@@ -6,9 +6,9 @@ To reconstruct a surface (green shown in the following figure) from a point clou
 
 ## compile using cmake
 
-Install [CGAL][] by following the instructions on their [web site][CGAL].
+Install [CGAL][] by following the instructions on their [web site][CGAL]. This is required for the reconstruction of the surface.
 
-Install [gflags][] for using the command lines.
+Install [gflags][] for using the command lines. This is an option for compiling the example code.
 
 ## API
 
