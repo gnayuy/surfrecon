@@ -4,7 +4,7 @@ To reconstruct a surface (green shown in the following figure) from a point clou
 
 ![Picture](data/surfrecon1.png)
 
-## compile using cmake
+## compile with cmake
 
 Install [CGAL][] by following the instructions on their [web site][CGAL]. This is required for the reconstruction of the surface.
 
