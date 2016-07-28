@@ -31,6 +31,7 @@ For example, copy point.swc from data folder to your surfvol folder and then typ
 ## references
 
 [1]. Digne, Julie, et al. "Scale space meshing of raw data point sets." Computer Graphics Forum. Vol. 30. No. 6. Blackwell Publishing Ltd, 2011.
+
 [2]. Zlatanova, Sisi, et al. "Towards 3D raster GIS: On developing a raster engine for spatial DBMS." ISPRS WG IV/2 Workshop" Global Geospatial Information and High Resolution Global Land Cover/Land Use Mapping" Novosibirsk, Russian Federation, 21 April 2016.
 
 [NeuTu]:http://www.neutracing.com
