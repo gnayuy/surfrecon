@@ -20,6 +20,8 @@ Other parameters: Surf.surfrecon(PointCloud pcIn, Voxels voxelOut, int co, int n
 
 ./surfvol -pc <$PointCloud> -o <$Voxels>
 
+For example, copy point.swc from data folder to your surfvol folder and then type "./surfvol -pc points.swc -o voxels.swc".
+
 ## file formats
 
 [OFF][]: object file format
