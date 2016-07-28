@@ -481,7 +481,7 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co, int num_threads)
                                     true // Force manifold output
                                     );
     
-    std::cerr << "Reconstruction done in " << t.time() << " sec." << std::endl;
+    std::cerr << " Surface reconstruction done in " << t.time() << " sec." << std::endl;
 
     //
     faces.clear();
@@ -564,7 +564,7 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co, int num_threads)
         cout << "Fail to execute voxelization."<<endl;
         return;
     }
-    cout<<" Convert mesh to "<<voxelOut.size()<<" voxels in "<< t.time() << " sec." <<endl;
+    cout<<" Convert mesh "<<nTriangles<<" triangles to "<<voxelOut.size()<<" voxels in "<< t.time() << " sec." <<endl;
 
     //
     return;

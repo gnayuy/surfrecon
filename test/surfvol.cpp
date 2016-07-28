@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         {
             if(strstr(line.c_str(),"#"))
             {
-                cout << " skip comments" << endl;
+                //cout << " skip comments" << endl;
             }
             else
             {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     {
         out << i << " 0 "<< voxelOut[i].x <<" "<< voxelOut[i].y <<" "<<voxelOut[i].z<< " 0.5 -1\n";
     }
-    std::cerr << " save " << FLAGS_o << t.time() << " sec." << std::endl;
+    std::cerr << " save " << FLAGS_o <<" in "<< t.time() << " sec." << std::endl;
     
     out.close();
     
