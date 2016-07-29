@@ -13,9 +13,11 @@ Install [gflags][] for using the command lines. This is an option for compiling 
 ## conda install
 
 conda create -n <YOUR_CONDA_ENV> boost gmp mpfr
+
 source activate <YOUR_CONDA_ENV>
 
 git clone https://github.com/CGAL/cgal.git
+
 cmake . -DCMAKE_PREFIX_PATH=path_to_your_conda_env
 
 ## api
