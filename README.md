@@ -18,7 +18,6 @@ source activate <YOUR_CONDA_ENV>
 git clone https://github.com/CGAL/cgal.git
 cmake . -DCMAKE_PREFIX_PATH=path_to_your_conda_env
 
-
 ## api
 
 To use surfrecon library, you need include surfrecon.h and call the function Surf.surfrecon(PointCloud pcIn, Voxels voxelOut).
