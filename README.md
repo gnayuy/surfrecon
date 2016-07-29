@@ -30,7 +30,8 @@ To install surfrecon:
     % git clone https://github.com/gnayuy/surfrecon.git
     % cmake . -DCMAKE_PREFIX_PATH=path_to_your_conda_env
     % make
-    % 
+    % cp src/surfrecon.h <YOUR_CONDA_ENV>/include
+    % cp src/libsurfrecon.dylib <YOUR_CONDA_ENV>/lib
 
 ## api
 
