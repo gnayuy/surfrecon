@@ -10,6 +10,15 @@ Install [CGAL][] by following the instructions on their [web site][CGAL]. This i
 
 Install [gflags][] for using the command lines. This is an option for compiling the example code.
 
+## conda install
+
+conda create -n <YOUR_CONDA_ENV> boost gmp mpfr
+source activate <YOUR_CONDA_ENV>
+
+git clone https://github.com/CGAL/cgal.git
+cmake . -DCMAKE_PREFIX_PATH=path_to_your_conda_env
+
+
 ## api
 
 To use surfrecon library, you need include surfrecon.h and call the function Surf.surfrecon(PointCloud pcIn, Voxels voxelOut).
