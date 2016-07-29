@@ -21,7 +21,13 @@ To install cgal:
 
     % git clone https://github.com/CGAL/cgal.git
     % cmake . -DCMAKE_PREFIX_PATH=path_to_your_conda_env
-    % make; make install
+    % make
+    % cp -r include/CGAL <YOUR_CONDA_ENV>/include
+    % cp lib/* <YOUR_CONDA_ENV>/lib/
+
+To install surfrecon:
+
+    % git clone 
 
 ## api
 
