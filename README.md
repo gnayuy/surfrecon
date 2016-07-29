@@ -10,7 +10,7 @@ Install [CGAL][] by following the instructions on their [web site][CGAL]. This i
 
 Install [gflags][] for using the command lines. This is an option for compiling the example code.
 
-## conda install
+## conda installation
 
 conda create -n <YOUR_CONDA_ENV> boost gmp mpfr
 
