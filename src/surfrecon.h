@@ -83,10 +83,13 @@ public:
     void surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co = 26, int num_threads = 8);
     
 public:
-    // Voxelization with Zlatanova's efficient implementation of Laine's topological voxelization
-    // Zlatanova, Sisi, et al. "Towards 3D raster GIS: On developing a raster engine for spatial DBMS."
+    // Voxelization with Zlatanova's efficient implementation [1] of Laine's topological voxelization [2]
+    // 1. Zlatanova, Sisi, et al. "Towards 3D raster GIS: On developing a raster engine for spatial DBMS."
     // ISPRS WG IV/2 Workshop "Global Geospatial Information and High Resolution Global Land Cover/Land Use Mapping"
     // Novosibirsk, Russian Federation, 21 April 2016.
+    // 2. Laine, Samuli. "A topological approach to voxelization." Computer Graphics Forum. Vol. 32. No. 4. 
+    // Blackwell Publishing Ltd, 2013.
+    //
     int voxelizeMesh(VoxelSet &voxels, Vertex *vertices, unsigned int nVertices, Face **mesh, unsigned int nTriangles, Vertex *vSize, int co = 26, int num_threads = 8);
     
     void assign(Vertex *to, Vertex *from);
