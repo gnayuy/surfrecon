@@ -20,7 +20,7 @@ public:
 // main func
 int main(int argc, char *argv[])
 {
-    cout<<"surfvol: to reconstruct a surface from a point cloud and voxelate it.\n";
+    cout<<"surfvol: to reconstruct a surface from a point cloud and voxelize it.\n";
     
     //
     gflags::SetUsageMessage("surfvol -pc <PointCloud> -o <Voxels>");
