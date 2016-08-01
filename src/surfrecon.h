@@ -83,7 +83,7 @@ public:
     void surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co = 26, int num_threads = 8);
     
 public:
-    // Voxelization with Zlatanova's 3D raster engine (http://www.sciencedirect.com/science/article/pii/S2215016116000029)
+    // Voxelization with Zlatanova's efficient implementation of Laine's topological voxelization
     // Zlatanova, Sisi, et al. "Towards 3D raster GIS: On developing a raster engine for spatial DBMS."
     // ISPRS WG IV/2 Workshop "Global Geospatial Information and High Resolution Global Land Cover/Land Use Mapping"
     // Novosibirsk, Russian Federation, 21 April 2016.
