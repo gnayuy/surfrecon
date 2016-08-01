@@ -1,6 +1,6 @@
 # surfrecon
 
-surfrecon is developed to reconstruct a surface (green shown in the following figure) from a point cloud (red). The surface reconstruction method we use Digne's scale space meshing approach [[1][]] implemented in CGAL. The voxelization method we use Zlatanova's rasterizer implementation [[2][]] of Laine's voxelization method [[3][]]. The following figure is visualized in [NeuTu][].
+surfrecon is developed to reconstruct a surface (green shown in the following figure) from a point cloud (red). The surface reconstruction method we use Digne's scale space meshing approach [[1][]] implemented in CGAL. The voxelization method we use Zlatanova's efficient implementation [[2][]] of Laine's topological voxelization method [[3][]]. The following figure is visualized in [NeuTu][].
 
 ![Picture](data/surfrecon1.png)
 
