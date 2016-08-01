@@ -470,10 +470,14 @@ void Surf::surfrecon(VoxelSet pcIn, VoxelSet &voxelOut, int co, int num_threads)
     // init
     setPoints(pcIn);
     
-    // reconstruct
+    //
     Timer t;
     t.start();
     
+    // CGAL's implementation of scale space surface reconstrcution
+    // Digne, Julie, et al. "Scale space meshing of raw data point sets." 
+    // Computer Graphics Forum. Vol. 30. No. 6. Blackwell Publishing Ltd, 2011.
+    //
     Reconstruction reconstruct( 10, 200 );
     
     reconstruct.reconstruct_surface( points.begin(), points.end(), 4,
